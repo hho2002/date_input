@@ -12,9 +12,9 @@ function DateInput(el, opts) {
   this.hide();
 };
 DateInput.DEFAULT_OPTS = {
-  month_names: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  short_month_names: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  short_day_names: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  month_names: ["\u4e00\u6708", "\u4e8c\u6708", "\u4e09\u6708", "\u56db\u6708", "\u4e94\u6708", "\u516d\u6708", "\u4e03\u6708", "\u516b\u6708", "\u4e5d\u6708", "\u5341\u6708", "\u5341\u4e00\u6708", "\u5341\u4e8c\u6708"],
+  short_month_names: ["\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d", "\u5341", "\u5341\u4e00", "\u5341\u4e8c"],
+  short_day_names: ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d"],
   start_of_week: 1
 };
 DateInput.prototype = {
@@ -204,15 +204,19 @@ DateInput.prototype = {
   
   stringToDate: function(string) {
     var matches;
-    if (matches = string.match(/^(\d{1,2}) ([^\s]+) (\d{4,4})$/)) {
-      return new Date(matches[3], this.shortMonthNum(matches[2]), matches[1], 12, 00);
+    if (matches = string.match(/^(\d{4,4})-(\d{2,2})-(\d{2,2})$/)) {
+        return new Date(matches[1], matches[2] - 1, matches[3]);
     } else {
-      return null;
+        return null;
     };
   },
   
   dateToString: function(date) {
-    return date.getDate() + " " + this.short_month_names[date.getMonth()] + " " + date.getFullYear();
+    var month = (date.getMonth() + 1).toString();
+    var dom = date.getDate().toString();
+    if (month.length == 1) month = "0" + month;
+    if (dom.length == 1) dom = "0" + dom;
+    return date.getFullYear() + "-" + month + "-" + dom;
   },
   
   setPosition: function() {
