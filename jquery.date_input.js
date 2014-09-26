@@ -15,7 +15,9 @@ DateInput.DEFAULT_OPTS = {
   month_names: ["\u4e00\u6708", "\u4e8c\u6708", "\u4e09\u6708", "\u56db\u6708", "\u4e94\u6708", "\u516d\u6708", "\u4e03\u6708", "\u516b\u6708", "\u4e5d\u6708", "\u5341\u6708", "\u5341\u4e00\u6708", "\u5341\u4e8c\u6708"],
   short_month_names: ["\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d", "\u5341", "\u5341\u4e00", "\u5341\u4e8c"],
   short_day_names: ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d"],
-  start_of_week: 1
+  start_of_week: 1,
+  max_date: "",
+  min_date: ""
 };
 DateInput.prototype = {
   build: function() {
@@ -57,6 +59,9 @@ DateInput.prototype = {
       $(".button", nav).mouseover(function() { $(this).addClass("hover") });
       $(".button", nav).mouseout(function() { $(this).removeClass("hover") });
     };
+
+    this.maxDate = this.stringToDate(this.max_date);
+    this.minDate = this.stringToDate(this.min_date);
     
     this.tbody = $("tbody", this.dateSelector);
     
@@ -79,11 +84,12 @@ DateInput.prototype = {
       
       // Draw each of the days
       for (var i = 0; i <= numDays; i++) {
-        var currentDay = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), rangeStart.getDate() + i, 12, 00);
+        var currentDay = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), rangeStart.getDate() + i);
         
         if (this.isFirstDayOfWeek(currentDay)) dayCells += "<tr>";
         
-        if (currentDay.getMonth() == date.getMonth()) {
+        if (currentDay.getMonth() == date.getMonth() && (!this.maxDate || currentDay <= this.maxDate) &&
+                                                        (!this.minDate || currentDay >= this.minDate)) {
           dayCells += '<td class="selectable_day" date="' + this.dateToString(currentDay) + '">' + currentDay.getDate() + '</td>';
         } else {
           dayCells += '<td class="unselected_month" date="' + this.dateToString(currentDay) + '">' + currentDay.getDate() + '</td>';
