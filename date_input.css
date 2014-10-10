@@ -41,6 +41,7 @@
     float: right;
     width: 35%;
     margin-right: -8px; /* Compensates for cell borders */
+    clear: none;
   }
   .date_selector .month_name, .date_selector .year_name {
     font-weight: bold;
