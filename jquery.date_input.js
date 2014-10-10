@@ -25,7 +25,8 @@ DateInput.DEFAULT_OPTS = {
   short_day_names: ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d"],
   start_of_week: 1,
   max_date: "",
-  min_date: ""
+  min_date: "",
+  change_input: false
 };
 DateInput.prototype = {
   build: function() {
@@ -150,7 +151,11 @@ DateInput.prototype = {
   // Write a date string to the input and hide. Trigger the change event so we know to update the
   // selectedDate.
   changeInput: function(dateString) {
-    this.input.val(dateString).change();
+    if (this.change_input && typeof this.change_input == "function") {
+      this.change_input(dateString);
+    } else {
+      this.input.val(dateString).change();
+    }
     if (!this.force_show) {
       this.hide();
     }

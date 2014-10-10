@@ -9,7 +9,8 @@
   <script type="text/javascript">
 $(document).ready(function() {
 	$("#select_date").date_input({
-		target: "#date_input"
+		target: "#date_input",
+		change_input: function(val) {alert(val);}
 	});
 	$("#date_input2").date_input();
 });
