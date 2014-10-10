@@ -9,7 +9,7 @@ function DateInput(el, opts) {
   
   this.build();
   this.selectDate();
-  this.hide();
+  opts.force_show ? this.show() : this.hide();
 };
 DateInput.DEFAULT_OPTS = {
   month_names: ["\u4e00\u6708", "\u4e8c\u6708", "\u4e09\u6708", "\u56db\u6708", "\u4e94\u6708", "\u516d\u6708", "\u4e03\u6708", "\u516b\u6708", "\u4e5d\u6708", "\u5341\u6708", "\u5341\u4e00\u6708", "\u5341\u4e8c\u6708"],
@@ -17,7 +17,8 @@ DateInput.DEFAULT_OPTS = {
   short_day_names: ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d"],
   start_of_week: 1,
   max_date: "",
-  min_date: ""
+  min_date: "",
+  force_show: false
 };
 DateInput.prototype = {
   build: function() {
@@ -135,7 +136,9 @@ DateInput.prototype = {
   // selectedDate.
   changeInput: function(dateString) {
     this.input.val(dateString).change();
-    this.hide();
+    if (!opts.force_show) {
+      this.hide();
+    }
   },
   
   show: function() {
@@ -155,7 +158,7 @@ DateInput.prototype = {
   
   // We should hide the date selector if a click event happens outside of it
   hideIfClickOutside: function(event) {
-    if (event.target != this.input[0] && !this.insideSelector(event)) {
+    if (!!opts.force_show && event.target != this.input[0] && !this.insideSelector(event)) {
       this.hide();
     };
   },
@@ -178,8 +181,10 @@ DateInput.prototype = {
     {
       case 9: // tab
       case 27: // esc
-        this.hide();
-        return;
+        if (!opts.force_show) {
+          this.hide();
+          return;
+        }
       break;
       case 13: // enter
         this.changeInput(this.selectedDateString);
