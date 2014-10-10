@@ -4,12 +4,20 @@ function DateInput(el, opts) {
   if (typeof(opts) != "object") opts = {};
   $.extend(this, DateInput.DEFAULT_OPTS, opts);
   
-  this.input = $(el);
+  if ("target" in opts) {
+    this.input = $(opts.target);
+    this.source = $(el);
+    this.force_show = true;
+  } else {
+    this.input = $(el);
+    this.source = this.input;
+    this.force_show = false;
+  }
   this.bindMethodsToObj("show", "hide", "hideIfClickOutside", "keydownHandler", "selectDate");
   
   this.build();
   this.selectDate();
-  opts.force_show ? this.show() : this.hide();
+  this.force_show ? this.show() : this.hide();
 };
 DateInput.DEFAULT_OPTS = {
   month_names: ["\u4e00\u6708", "\u4e8c\u6708", "\u4e09\u6708", "\u56db\u6708", "\u4e94\u6708", "\u516d\u6708", "\u4e03\u6708", "\u516b\u6708", "\u4e5d\u6708", "\u5341\u6708", "\u5341\u4e00\u6708", "\u5341\u4e8c\u6708"],
@@ -17,8 +25,7 @@ DateInput.DEFAULT_OPTS = {
   short_day_names: ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d"],
   start_of_week: 1,
   max_date: "",
-  min_date: "",
-  force_show: false
+  min_date: ""
 };
 DateInput.prototype = {
   build: function() {
@@ -48,9 +55,17 @@ DateInput.prototype = {
     });
     tableShell += "</tr></thead><tbody></tbody></table>";
     
-    this.dateSelector = this.rootLayers = $('<div class="date_selector"></div>').append(nav, tableShell).insertAfter(this.input);
+    this.dateSelector = this.rootLayers = $('<div class="date_selector"></div>').append(nav, tableShell);
+
+    if (this.force_show) {
+      this.dateSelector.addClass('date_selector_inline');
+      this.source.append(this.dateSelector);
+    } else {
+      //this.dateSelector.insertAfter(this.source);
+      this.source.after(this.dateSelector);
+    }
     
-    if ($.browser.msie && $.browser.version < 7) {
+    if (!this.force_show && $.browser.msie && $.browser.version < 7) {
       // The ieframe is a hack which works around an IE <= 6 bug where absolutely positioned elements
       // appear behind select boxes. Putting an iframe over the top of the select box prevents this.
       this.ieframe = $('<iframe class="date_selector_ieframe" frameborder="0" src="#"></iframe>').insertBefore(this.dateSelector);
@@ -136,7 +151,7 @@ DateInput.prototype = {
   // selectedDate.
   changeInput: function(dateString) {
     this.input.val(dateString).change();
-    if (!opts.force_show) {
+    if (!this.force_show) {
       this.hide();
     }
   },
@@ -158,7 +173,7 @@ DateInput.prototype = {
   
   // We should hide the date selector if a click event happens outside of it
   hideIfClickOutside: function(event) {
-    if (!!opts.force_show && event.target != this.input[0] && !this.insideSelector(event)) {
+    if (!this.force_show && event.target != this.input[0] && !this.insideSelector(event)) {
       this.hide();
     };
   },
@@ -181,7 +196,7 @@ DateInput.prototype = {
     {
       case 9: // tab
       case 27: // esc
-        if (!opts.force_show) {
+        if (!this.force_show) {
           this.hide();
           return;
         }
@@ -231,9 +246,9 @@ DateInput.prototype = {
   },
   
   setPosition: function() {
-    var offset = this.input.offset();
+    var offset = this.source.offset();
     this.rootLayers.css({
-      top: offset.top + this.input.outerHeight(),
+      top: offset.top + this.source.outerHeight(),
       left: offset.left
     });
     

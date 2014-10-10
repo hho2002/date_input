@@ -8,9 +8,10 @@
   <script type="text/javascript" src="../jquery.date_input.js"></script>
   <script type="text/javascript">
 $(document).ready(function() {
-	$("#date_input").date_input({
-		force_show: true
+	$("#select_date").date_input({
+		target: "#date_input"
 	});
+	$("#date_input2").date_input();
 });
   </script>
   <link rel="stylesheet" href="../date_input.css" type="text/css">
@@ -25,6 +26,8 @@ $(document).ready(function() {
   <p>
     <input type="text" name="date" id="date_input">
   </p>
+  
+  <div id="select_date"></div>
   
   <p>
     <select>

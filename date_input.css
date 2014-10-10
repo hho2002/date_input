@@ -18,6 +18,10 @@
   z-index: 100000;
   display: none;
 }
+.date_selector_inline {
+  display: inline-block !important;
+  position: static;
+}
 .date_selector_ieframe {
   position: absolute;
   z-index: 99999;
