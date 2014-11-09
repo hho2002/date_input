@@ -26,7 +26,8 @@ DateInput.DEFAULT_OPTS = {
   start_of_week: 1,
   max_date: "",
   min_date: "",
-  change_input: false
+  change_input: false,
+  selected_dates: []
 };
 DateInput.prototype = {
   build: function() {
@@ -131,7 +132,13 @@ DateInput.prototype = {
     };
     
     $('.selected', this.tbody).removeClass("selected");
-    $('td[date="' + this.selectedDateString + '"]', this.tbody).addClass("selected");
+    if (this.input.val() != '' && this.selected_dates.length == 0) {
+      $('td[date="' + this.selectedDateString + '"]', this.tbody).addClass("selected");
+    }
+
+    for (var x in this.selected_dates) {
+      $('td[date="' + this.selected_dates[x] + '"]', this.tbody).addClass("selected");
+    }
   },
   
   // Select a particular date. If the date is not specified it is read from the input. If no date is
